@@ -195,6 +195,65 @@
             </div>
         </div>
 
+        {% if current_user.role == 'admin' %}
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200 mt-6">
+            <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-5">
+                <h5 class="text-white font-bold text-xl flex items-center gap-3">
+                    <i class="bi bi-envelope text-2xl"></i> 
+                    <span>Email Notification System</span>
+                </h5>
+            </div>
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-green-50 border-2 border-green-200 rounded-lg p-4">
+                        <div class="text-green-600 font-bold text-sm mb-1">Emails Sent</div>
+                        <div class="text-3xl font-bold text-green-700">{{ email_stats.total_sent }}</div>
+                    </div>
+                    <div class="bg-red-50 border-2 border-red-200 rounded-lg p-4">
+                        <div class="text-red-600 font-bold text-sm mb-1">Failed Emails</div>
+                        <div class="text-3xl font-bold text-red-700">{{ email_stats.total_failed }}</div>
+                    </div>
+                    <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
+                        <div class="text-blue-600 font-bold text-sm mb-1">Due Reminders</div>
+                        <div class="text-3xl font-bold text-blue-700">{{ email_stats.due_reminders }}</div>
+                    </div>
+                    <div class="bg-amber-50 border-2 border-amber-200 rounded-lg p-4">
+                        <div class="text-amber-600 font-bold text-sm mb-1">Overdue Notices</div>
+                        <div class="text-3xl font-bold text-amber-700">{{ email_stats.overdue_notices }}</div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 border-2 border-gray-200 rounded-lg p-6 mb-6">
+                    <h6 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                        <i class="bi bi-info-circle"></i>
+                        <span>Email System Status</span>
+                    </h6>
+                    <p class="text-gray-700 mb-2">
+                        <strong>Mode:</strong> {% if has_sendgrid %}Production (SendGrid){% else %}Simulation Mode{% endif %}
+                    </p>
+                    <p class="text-gray-600 text-sm">
+                        {% if has_sendgrid %}
+                        Emails are being sent via SendGrid to recipients.
+                        {% else %}
+                        Emails are being logged to the database instead of being sent. Set SENDGRID_API_KEY to enable actual email delivery.
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <div class="flex gap-4 flex-wrap">
+                    <a href="{{ url_for('dashboard.send_due_reminders') }}" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:from-blue-600 hover:to-blue-700 transition flex items-center gap-2 shadow-lg">
+                        <i class="bi bi-bell"></i>
+                        <span>Send Due Date Reminders</span>
+                    </a>
+                    <a href="{{ url_for('dashboard.send_overdue_notices_route') }}" class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-lg font-bold hover:from-red-600 hover:to-red-700 transition flex items-center gap-2 shadow-lg">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span>Send Overdue Notices</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
     </div>
 </div>
 {% endblock %}

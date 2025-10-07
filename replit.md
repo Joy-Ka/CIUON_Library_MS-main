@@ -86,9 +86,25 @@ Preferred communication style: Simple, everyday language.
 - **Environment Variables**: 
   - SESSION_SECRET (required): Flask session secret key - application will not start without this
   - DATABASE_URL (optional): PostgreSQL connection string - falls back to SQLite if not provided
+  - SENDGRID_API_KEY (optional): SendGrid API key for sending actual emails - system works in simulation mode without it
+  - FROM_EMAIL (optional): Email address for sending notifications (default: library@confucius.uonbi.ac.ke)
 - **Database URI**: Automatically selects PostgreSQL or SQLite based on environment
 - **Debug Mode**: Development configuration with SQLAlchemy query logging disabled
 - **Security Requirements**: SESSION_SECRET must be set in environment to prevent security vulnerabilities
+
+### Email Notification System
+- **Email Service**: Configured to use SendGrid for transactional emails
+- **Integration Status**: SendGrid Replit integration was dismissed - system operates in simulation mode
+- **Simulation Mode**: When SENDGRID_API_KEY is not set, emails are logged to database and console instead of being sent
+- **Email Types**:
+  - Due Date Reminders: Sent 1-2 days before book due date (configurable per student)
+  - Overdue Notices: Sent for books past their due date with fine information
+- **Fine Policy**: 3-day loan period for students, 20 KES per day overdue fine
+- **Notification Preferences**: Students can configure email preferences for reminders
+- **Email Logging**: All email attempts (sent/failed) are logged to EmailLog table for auditing
+- **Future Setup**: To enable actual email sending, either:
+  1. Set up SendGrid Replit connector integration (preferred - automatic key management)
+  2. Or set SENDGRID_API_KEY environment variable manually with your SendGrid API key
 
 ## Recent Changes (October 2025)
 
