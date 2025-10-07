@@ -43,9 +43,11 @@ def active_students():
     # Get most active students
     active_students = db.session.query(
         Student.name,
-        Student.identifier,
+        Student.registration_number,
+        Student.id_number,
+        Student.passport_number,
         func.count(BorrowRecord.id).label('borrow_count')
-    ).join(BorrowRecord).group_by(Student.id).order_by(desc('borrow_count')).limit(20).all()
+    ).join(BorrowRecord).group_by(Student.id, Student.name, Student.registration_number, Student.id_number, Student.passport_number).order_by(desc('borrow_count')).limit(20).all()
     
     return render_template('reports/active_students.html', students=active_students)
 
@@ -59,15 +61,16 @@ def category_trends():
     # Get borrowing trends by category
     category_stats = db.session.query(
         Category.name,
-        func.count(BorrowRecord.id).label('borrow_count'),
-        func.count(Book.id).label('total_books')
-    ).join(Book).outerjoin(BorrowRecord).group_by(Category.id).all()
+        func.count(func.distinct(BorrowRecord.id)).label('borrow_count'),
+        func.count(func.distinct(Book.id)).label('total_books')
+    ).select_from(Category).join(Book, Book.category_id == Category.id).outerjoin(BorrowRecord, BorrowRecord.book_id == Book.id).group_by(Category.id, Category.name).all()
     
     # Include uncategorized books
     uncategorized_books = Book.query.filter_by(category_id=None).count()
     uncategorized_borrows = db.session.query(func.count(BorrowRecord.id)).join(Book).filter(Book.category_id.is_(None)).scalar()
     
     if uncategorized_books > 0:
+        category_stats = list(category_stats)
         category_stats.append(('Uncategorized', uncategorized_borrows or 0, uncategorized_books))
     
     return render_template('reports/category_trends.html', categories=category_stats)
@@ -159,8 +162,12 @@ def inactive_students():
     six_months_ago = datetime.utcnow() - timedelta(days=180)
     
     # Get students who have never borrowed or haven't borrowed in 6 months
+    from sqlalchemy import or_
     inactive_students = db.session.query(Student).outerjoin(BorrowRecord).group_by(Student.id).having(
-        func.max(BorrowRecord.borrowed_at) < six_months_ago or func.max(BorrowRecord.borrowed_at).is_(None)
+        or_(
+            func.max(BorrowRecord.borrowed_at) < six_months_ago,
+            func.max(BorrowRecord.borrowed_at).is_(None)
+        )
     ).all()
     
     return render_template('reports/inactive_students.html', 
@@ -173,18 +180,18 @@ def charts_data():
     if current_user.role != 'admin':
         return jsonify({'error': 'Access denied'}), 403
     
-    # Borrowing trends by month (last 12 months)
+    # Borrowing trends by month (last 12 months) - PostgreSQL compatible
     one_year_ago = datetime.utcnow() - timedelta(days=365)
     monthly_borrows = db.session.query(
-        func.strftime('%Y-%m', BorrowRecord.borrowed_at).label('month'),
+        func.to_char(BorrowRecord.borrowed_at, 'YYYY-MM').label('month'),
         func.count(BorrowRecord.id).label('count')
-    ).filter(BorrowRecord.borrowed_at >= one_year_ago).group_by('month').all()
+    ).filter(BorrowRecord.borrowed_at >= one_year_ago).group_by(func.to_char(BorrowRecord.borrowed_at, 'YYYY-MM')).all()
     
     # Category distribution
     category_distribution = db.session.query(
         Category.name,
         func.count(BorrowRecord.id).label('borrow_count')
-    ).join(Book).join(BorrowRecord).group_by(Category.id).all()
+    ).select_from(Category).join(Book, Book.category_id == Category.id).join(BorrowRecord, BorrowRecord.book_id == Book.id).group_by(Category.id, Category.name).all()
     
     # Include uncategorized books
     uncategorized_borrows = db.session.query(
@@ -194,15 +201,15 @@ def charts_data():
     if uncategorized_borrows > 0:
         category_distribution = list(category_distribution) + [('Uncategorized', uncategorized_borrows)]
     
-    # Fine collection trends (last 12 months)
+    # Fine collection trends (last 12 months) - PostgreSQL compatible
     fine_trends = db.session.query(
-        func.strftime('%Y-%m', Fine.created_at).label('month'),
+        func.to_char(Fine.created_at, 'YYYY-MM').label('month'),
         func.sum(Fine.amount).label('total_amount'),
         func.count(Fine.id).label('fine_count')
     ).filter(
         Fine.created_at >= one_year_ago,
         Fine.paid == True
-    ).group_by('month').all()
+    ).group_by(func.to_char(Fine.created_at, 'YYYY-MM')).all()
     
     # Student vs Staff borrowing ratio
     student_borrows = BorrowRecord.query.filter(BorrowRecord.student_id.isnot(None)).count()

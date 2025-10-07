@@ -39,14 +39,20 @@ def borrow_book():
         # Check availability
         if book.available_copies <= 0:
             flash('This book is not available for borrowing', 'error')
-            return render_template('borrowing/borrow_form.html')
+            students = Student.query.order_by(Student.name).all()
+            staff = Staff.query.order_by(Staff.name).all()
+            books = Book.query.filter(Book.available_copies > 0).order_by(Book.title).all()
+            return render_template('borrowing/borrow_form.html', students=students, staff=staff, books=books)
         
         # Check student borrowing limits
         if student_id:
             student = Student.query.get_or_404(student_id)
             if student.current_borrowed_count >= 3:
                 flash('Student has reached the maximum borrowing limit of 3 books', 'error')
-                return render_template('borrowing/borrow_form.html')
+                students = Student.query.order_by(Student.name).all()
+                staff = Staff.query.order_by(Staff.name).all()
+                books = Book.query.filter(Book.available_copies > 0).order_by(Book.title).all()
+                return render_template('borrowing/borrow_form.html', students=students, staff=staff, books=books)
         
         # Create borrow record
         borrow_record = BorrowRecord(
@@ -83,7 +89,12 @@ def borrow_book():
             db.session.rollback()
             flash('Error processing borrow request', 'error')
     
-    return render_template('borrowing/borrow_form.html')
+    # GET request - load data for dropdowns
+    students = Student.query.order_by(Student.name).all()
+    staff = Staff.query.order_by(Staff.name).all()
+    books = Book.query.filter(Book.available_copies > 0).order_by(Book.title).all()
+    
+    return render_template('borrowing/borrow_form.html', students=students, staff=staff, books=books)
 
 @borrowing_bp.route('/return/<int:borrow_id>', methods=['GET', 'POST'])
 @login_required
