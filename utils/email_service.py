@@ -47,9 +47,11 @@ def send_email(to_email, subject, body, email_type, student_id=None, borrow_reco
                     server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
                     server.send_message(msg)
                 
+                current_app.logger.info(f"Email sent successfully via Gmail to {to_email}")
                 status = 'sent'
                 error_message = None
             except Exception as gmail_error:
+                current_app.logger.error(f"Gmail SMTP error: {str(gmail_error)}")
                 status = 'failed'
                 error_message = f'Gmail SMTP error: {str(gmail_error)}'
         
@@ -77,10 +79,10 @@ def send_email(to_email, subject, body, email_type, student_id=None, borrow_reco
                 status = 'failed'
                 error_message = f'SendGrid error: {response.status_code}'
         else:
-            # Simulate email sending if no credentials (development mode)
-            current_app.logger.info(f"Email simulation - To: {to_email}, Subject: {subject}")
-            status = 'sent'
-            error_message = None
+            # No email credentials configured
+            current_app.logger.warning(f"Email NOT SENT (no credentials) - To: {to_email}, Subject: {subject}")
+            status = 'failed'
+            error_message = 'No email credentials configured (GMAIL_USER or SENDGRID_API_KEY required)'
         
         # Log the email
         email_log = EmailLog(
