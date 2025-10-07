@@ -14,9 +14,12 @@ Preferred communication style: Simple, everyday language.
 
 ### Frontend Architecture
 - **Template Engine**: Jinja2 with Flask for server-side rendering
-- **UI Framework**: Bootstrap 5.1.3 with Bootstrap Icons for responsive design
-- **Layout Structure**: Base template with extension blocks for consistent styling
-- **Custom Styling**: Chinese Institute branding with red color scheme (#d32f2f)
+- **UI Framework**: Tailwind CSS 3.x (CDN) for modern utility-first styling with Bootstrap 5.1.3 for legacy components
+- **Icons**: Bootstrap Icons 1.7.2 for consistent iconography
+- **Layout Structure**: Vertical sidebar navigation with responsive mobile toggle
+- **Navigation**: Left sidebar layout with collapsible mobile menu
+- **Custom Styling**: Confucius Institute branding with red color scheme (#d32f2f)
+- **Responsive Design**: Mobile-first approach with hamburger menu for small screens
 
 ### Backend Architecture
 - **Web Framework**: Flask with Blueprint-based modular architecture
@@ -69,7 +72,8 @@ Preferred communication style: Simple, everyday language.
 - **Werkzeug**: Password hashing and security utilities
 
 ### Frontend Dependencies
-- **Bootstrap 5.1.3**: CSS framework via CDN for responsive UI components
+- **Tailwind CSS 3.x**: Primary utility-first CSS framework via CDN
+- **Bootstrap 5.1.3**: CSS framework via CDN for form components and alerts
 - **Bootstrap Icons 1.7.2**: Icon library via CDN for consistent iconography
 
 ### Database
