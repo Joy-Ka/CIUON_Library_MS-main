@@ -26,8 +26,18 @@
 <body class="bg-gray-50">
     {% if current_user.is_authenticated %}
     <div class="flex h-screen overflow-hidden">
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-red-600 text-white p-3 rounded-lg shadow-lg hover:bg-red-700 transition">
+            <i class="bi bi-list text-2xl"></i>
+        </button>
+
         <!-- Vertical Sidebar -->
-        <aside class="w-64 bg-gradient-to-b from-red-600 to-red-700 text-white flex-shrink-0 overflow-y-auto">
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-red-600 to-red-700 text-white flex-shrink-0 overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <!-- Close Button (Mobile Only) -->
+            <button id="close-sidebar-btn" class="lg:hidden absolute top-4 right-4 text-white hover:text-red-200 transition">
+                <i class="bi bi-x-lg text-2xl"></i>
+            </button>
+
             <!-- Logo/Brand Section -->
             <div class="p-6 border-b border-red-500">
                 <a href="{{ url_for('dashboard.index') }}" class="flex items-center gap-3 text-white hover:text-red-100 transition">
@@ -40,7 +50,7 @@
             </div>
 
             <!-- Navigation Links -->
-            <nav class="py-4">
+            <nav class="py-4 pb-32">
                 <a href="{{ url_for('dashboard.index') }}" class="sidebar-link flex items-center gap-3 px-6 py-3 text-white hover:bg-red-500 transition">
                     <i class="bi bi-house text-xl"></i>
                     <span class="font-medium">Dashboard</span>
@@ -99,8 +109,8 @@
                 {% endif %}
             </nav>
 
-            <!-- User Profile & Logout -->
-            <div class="absolute bottom-0 left-0 right-0 border-t border-red-500 bg-red-800 p-4">
+            <!-- User Profile & Logout (Fixed at bottom) -->
+            <div class="fixed bottom-0 left-0 w-64 border-t border-red-500 bg-red-800 p-4 transform -translate-x-full lg:translate-x-0 transition-transform duration-300" id="sidebar-footer">
                 <div class="flex items-center gap-3 mb-3">
                     <i class="bi bi-person-circle text-3xl"></i>
                     <div class="flex-1 min-w-0">
@@ -115,12 +125,15 @@
             </div>
         </aside>
 
+        <!-- Overlay for mobile (to close sidebar when clicking outside) -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden hidden"></div>
+
         <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Top Bar (Optional - for breadcrumbs, etc) -->
-            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+        <div class="flex-1 flex flex-col overflow-hidden w-full">
+            <!-- Top Bar -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-4 lg:px-6 py-4">
                 <div class="flex items-center justify-between">
-                    <h1 class="text-xl font-semibold text-gray-800">{% block page_header %}Library Management{% endblock %}</h1>
+                    <h1 class="text-lg lg:text-xl font-semibold text-gray-800 ml-16 lg:ml-0">{% block page_header %}Library Management{% endblock %}</h1>
                     <div class="text-sm text-gray-600">
                         <i class="bi bi-calendar"></i>
                         <span id="current-date"></span>
@@ -130,7 +143,7 @@
 
             <!-- Main Content with Flash Messages -->
             <main class="flex-1 overflow-y-auto bg-gray-50">
-                <div class="p-6">
+                <div class="p-4 lg:p-6">
                     {% with messages = get_flashed_messages(with_categories=true) %}
                         {% if messages %}
                             {% for category, message in messages %}
@@ -176,6 +189,47 @@
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             dateElement.textContent = today.toLocaleDateString('en-US', options);
         }
+
+        // Mobile sidebar toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarFooter = document.getElementById('sidebar-footer');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            sidebarFooter.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            sidebarFooter.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', openSidebar);
+        }
+
+        if (closeSidebarBtn) {
+            closeSidebarBtn.addEventListener('click', closeSidebar);
+        }
+
+        if (overlay) {
+            overlay.addEventListener('click', closeSidebar);
+        }
+
+        // Close sidebar when clicking a link on mobile
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) {
+                    closeSidebar();
+                }
+            });
+        });
     </script>
     {% block scripts %}{% endblock %}
 </body>
