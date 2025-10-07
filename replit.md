@@ -2,9 +2,9 @@
 
 ## Overview
 
-This is a web-based Library Management System built for the Confucius Institute at the University of Nairobi using Python Flask framework and SQLite database. The system manages books, students, staff, borrowing operations, and generates reports for library administration. It supports role-based access control with Admin and Librarian roles, handles different types of borrowers (UoN students, Kenyan non-UoN students, international students, and staff), and implements automated fine calculation for overdue books.
+This is a web-based Library Management System built for the Confucius Institute at the University of Nairobi using Python Flask framework. The system manages books, students, staff, borrowing operations, and generates reports for library administration. It supports role-based access control with Admin and Librarian roles, handles different types of borrowers (UoN students, Kenyan non-UoN students, international students, and staff), and implements automated fine calculation for overdue books.
 
-**Current Status:** Fully functional library management system with all core features implemented and operational. The Flask server is running on port 5000 with seeded initial data including sample users, books, categories, students, and staff.
+**Current Status:** Fully functional library management system with all core features implemented and operational. The Flask server is running on port 5000 with PostgreSQL database (production) with fallback to SQLite for local development. All templates have been created with Tailwind CSS styling and Confucius Institute red theme branding.
 
 ## User Preferences
 
@@ -38,7 +38,7 @@ Preferred communication style: Simple, everyday language.
 - **reports**: Administrative reporting (admin role only)
 
 ### Data Storage Solutions
-- **Primary Database**: SQLite for development/local deployment
+- **Database Configuration**: Flexible database setup supporting both PostgreSQL (production via DATABASE_URL) and SQLite (local development fallback)
 - **Database Models**:
   - User: Admin/Librarian accounts with role-based permissions
   - Student: Supports UoN registration numbers, Kenyan ID numbers, or international passports
@@ -77,10 +77,40 @@ Preferred communication style: Simple, everyday language.
 - **Bootstrap Icons 1.7.2**: Icon library via CDN for consistent iconography
 
 ### Database
-- **SQLite**: File-based database (confucius_library.db) for local development
-- **Migration Support**: Ready for PostgreSQL or MySQL migration in production
+- **PostgreSQL**: Production database via Replit's managed PostgreSQL (DATABASE_URL environment variable)
+- **SQLite**: Fallback database for local development when DATABASE_URL is not set
+- **Migration Support**: Flask-Migrate for schema management and versioning
+- **Security**: Password hash fields sized for scrypt algorithm (256 characters)
 
-### Configuration
-- **Environment Variables**: SESSION_SECRET for session key configuration
-- **Database URI**: Configurable for different database backends
+### Configuration & Security
+- **Environment Variables**: 
+  - SESSION_SECRET (required): Flask session secret key - application will not start without this
+  - DATABASE_URL (optional): PostgreSQL connection string - falls back to SQLite if not provided
+- **Database URI**: Automatically selects PostgreSQL or SQLite based on environment
 - **Debug Mode**: Development configuration with SQLAlchemy query logging disabled
+- **Security Requirements**: SESSION_SECRET must be set in environment to prevent security vulnerabilities
+
+## Recent Changes (October 2025)
+
+### Database Migration
+- Migrated from SQLite-only to flexible PostgreSQL/SQLite configuration
+- Added environment-aware database selection in app.py
+- Fixed password_hash field length to support scrypt hashing (256 characters)
+- Implemented proper PostgreSQL connection pooling with pool_recycle and pool_pre_ping
+
+### Template Implementation
+- Created 19+ missing templates with Tailwind CSS styling:
+  - **Staff Module**: detail.html with borrowing history
+  - **Books Module**: detail.html, categories.html, category_form.html
+  - **Reports Module**: index.html, most_borrowed.html, active_students.html, category_trends.html, stock_status.html, overdue_items.html, staff_borrows.html, stock_depletion.html, inactive_students.html
+  - **Audit Module**: list.html, entity_history.html, statistics.html
+  - **Backup Module**: list.html
+  - **Fines Module**: statistics.html, borrowing/fines.html
+- All templates follow Confucius Institute red theme (#d32f2f)
+- Responsive design with mobile-first approach
+- Consistent use of Tailwind CSS utility classes with Bootstrap components
+
+### Security Enhancements
+- Removed hard-coded SECRET_KEY fallback to prevent security vulnerabilities
+- Added runtime validation requiring SESSION_SECRET environment variable
+- Application now raises RuntimeError if SESSION_SECRET is not set
