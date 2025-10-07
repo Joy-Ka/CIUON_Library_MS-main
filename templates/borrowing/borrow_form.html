@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}Borrow Book - Confucius Institute Library{% endblock %}
@@ -21,6 +22,9 @@
                 <label for="student_id" class="form-label">Student</label>
                 <select class="form-select" id="student_id" name="student_id">
                     <option value="">Select Student</option>
+                    {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.name }} - {{ student.identifier }}</option>
+                    {% endfor %}
                 </select>
             </div>
 
@@ -28,6 +32,9 @@
                 <label for="staff_id" class="form-label">Staff</label>
                 <select class="form-select" id="staff_id" name="staff_id">
                     <option value="">Select Staff</option>
+                    {% for staff_member in staff %}
+                    <option value="{{ staff_member.id }}">{{ staff_member.name }} - {{ staff_member.staff_type }}</option>
+                    {% endfor %}
                 </select>
             </div>
 
@@ -35,6 +42,9 @@
                 <label for="book_id" class="form-label">Book</label>
                 <select class="form-select" id="book_id" name="book_id" required>
                     <option value="">Select Book</option>
+                    {% for book in books %}
+                    <option value="{{ book.id }}">{{ book.title }} by {{ book.author }} (Available: {{ book.available_copies }})</option>
+                    {% endfor %}
                 </select>
             </div>
 
@@ -59,31 +69,27 @@
 document.getElementById('borrower_type').addEventListener('change', function() {
     const studentSelect = document.getElementById('student_select');
     const staffSelect = document.getElementById('staff_select');
+    const studentInput = document.getElementById('student_id');
+    const staffInput = document.getElementById('staff_id');
     
     if (this.value === 'student') {
         studentSelect.style.display = 'block';
         staffSelect.style.display = 'none';
-        // Load students via AJAX
-        loadStudents();
+        studentInput.required = true;
+        staffInput.required = false;
+        staffInput.value = '';
     } else if (this.value === 'staff') {
         studentSelect.style.display = 'none';
         staffSelect.style.display = 'block';
-        // Load staff via AJAX
-        loadStaff();
+        studentInput.required = false;
+        staffInput.required = true;
+        studentInput.value = '';
     } else {
         studentSelect.style.display = 'none';
         staffSelect.style.display = 'none';
+        studentInput.required = false;
+        staffInput.required = false;
     }
 });
-
-function loadStudents() {
-    // Simple implementation - would use AJAX in production
-    // For now, we'll leave this as a basic form
-}
-
-function loadStaff() {
-    // Simple implementation - would use AJAX in production
-    // For now, we'll leave this as a basic form
-}
 </script>
 {% endblock %}
