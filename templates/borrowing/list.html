@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Borrowing - Confucius Institute Library{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-arrow-left-right"></i> Borrowing Management</h2>
+    <a href="{{ url_for('borrowing.borrow_book') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Borrow Book
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if status == 'active' else '' }}" 
+                   href="{{ url_for('borrowing.list_borrows', status='active') }}">
+                    Active Borrows
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if status == 'returned' else '' }}" 
+                   href="{{ url_for('borrowing.list_borrows', status='returned') }}">
+                    Returned
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if status == 'overdue' else '' }}" 
+                   href="{{ url_for('borrowing.list_borrows', status='overdue') }}">
+                    Overdue
+                </a>
+            </li>
+        </ul>
+
+        {% if borrows %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Borrower</th>
+                        <th>Type</th>
+                        <th>Borrowed Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for borrow in borrows %}
+                    <tr>
+                        <td>{{ borrow.book_ref.title }}</td>
+                        <td>{{ borrow.borrower_name }}</td>
+                        <td>{{ borrow.borrower_type }}</td>
+                        <td>{{ borrow.borrowed_at.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ borrow.due_date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if borrow.returned_at %}
+                                <span class="badge bg-success">Returned</span>
+                            {% elif borrow.is_overdue %}
+                                <span class="badge bg-danger">Overdue</span>
+                            {% else %}
+                                <span class="badge bg-primary">Active</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not borrow.returned_at %}
+                            <a href="{{ url_for('borrowing.return_book', borrow_id=borrow.id) }}" 
+                               class="btn btn-sm btn-success">
+                                <i class="bi bi-arrow-return-left"></i> Return
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center">
+            <p class="text-muted">No borrowing records found.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Fines Management - Confucius Institute Library{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-cash"></i> Fines Management</h2>
+    {% if current_user.role == 'admin' %}
+    <a href="{{ url_for('fines.fine_statistics') }}" class="btn btn-outline-primary">
+        <i class="bi bi-bar-chart"></i> Statistics
+    </a>
+    {% endif %}
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if status == 'unpaid' else '' }}" 
+                   href="{{ url_for('fines.list_fines', status='unpaid') }}">
+                    Unpaid Fines
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if status == 'paid' else '' }}" 
+                   href="{{ url_for('fines.list_fines', status='paid') }}">
+                    Paid Fines
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if status == 'waived' else '' }}" 
+                   href="{{ url_for('fines.list_fines', status='waived') }}">
+                    Waived Fines
+                </a>
+            </li>
+        </ul>
+
+        {% if fines %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Book</th>
+                        <th>Amount (KES)</th>
+                        <th>Original Amount</th>
+                        <th>Reason</th>
+                        <th>Date Created</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fine in fines %}
+                    <tr>
+                        <td>{{ fine.student_ref.name }}</td>
+                        <td>{{ fine.borrow_record.book_ref.title }}</td>
+                        <td>KES {{ "%.2f"|format(fine.amount) }}</td>
+                        <td>KES {{ "%.2f"|format(fine.original_amount or fine.amount) }}</td>
+                        <td>{{ fine.reason }}</td>
+                        <td>{{ fine.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if fine.waived %}
+                                <span class="badge bg-info">Waived</span>
+                            {% elif fine.paid %}
+                                <span class="badge bg-success">Paid</span>
+                            {% else %}
+                                <span class="badge bg-danger">Unpaid</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not fine.paid and not fine.waived %}
+                            <a href="{{ url_for('fines.adjust_fine', fine_id=fine.id) }}" 
+                               class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i> Adjust
+                            </a>
+                            <form method="POST" action="{{ url_for('fines.pay_fine', fine_id=fine.id) }}" 
+                                  style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-success" 
+                                        onclick="return confirm('Mark this fine as paid?')">
+                                    <i class="bi bi-check"></i> Mark Paid
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center">
+            <p class="text-muted">No fines found for this status.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

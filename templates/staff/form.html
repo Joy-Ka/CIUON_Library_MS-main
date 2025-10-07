@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit' if staff_member else 'Add' }} Staff - Confucius Institute Library{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4>{{ 'Edit' if staff_member else 'Add New' }} Staff Member</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               value="{{ staff_member.name if staff_member else '' }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="staff_type" class="form-label">Staff Type *</label>
+                        <select class="form-select" id="staff_type" name="staff_type" required>
+                            <option value="">Select Staff Type</option>
+                            <option value="teacher" {{ 'selected' if staff_member and staff_member.staff_type == 'teacher' else '' }}>Teacher</option>
+                            <option value="intern" {{ 'selected' if staff_member and staff_member.staff_type == 'intern' else '' }}>Intern</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               value="{{ staff_member.email if staff_member else '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phone" name="phone" 
+                               value="{{ staff_member.phone if staff_member else '' }}" 
+                               placeholder="+254...">
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('staff.list_staff') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Staff
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check"></i> {{ 'Update' if staff_member else 'Add' }} Staff Member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

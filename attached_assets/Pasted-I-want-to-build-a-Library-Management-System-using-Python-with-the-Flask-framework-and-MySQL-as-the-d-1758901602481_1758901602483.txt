@@ -1,0 +1,92 @@
+I want to build a Library Management System using Python with the Flask framework and MySQL as the database, hosted locally. The system is for the Confucius Institute at the University of Nairobi. It should manage Chinese learning resources (HSK 1–5) and other materials, but it should also allow adding books without predefined categories and allow adding new custom categories. Please generate the full Flask project structure, including routes, templates, models, and MySQL integration.
+
+### System Requirements:
+
+1. **User Roles**
+   - Admin (CIUON staff) → full control: manage users, books, reports, settings.
+   - Librarian → manage students, staff, borrowing, and books.
+
+2. **Authentication**
+   - Login page for admin and librarian (Flask-Login).
+   - Role-based dashboard: Admin sees reports/configurations; Librarian sees daily operations.
+
+3. **Student Management**
+   - Add and manage student details:
+     - Name
+     - Registration number (if UoN student)
+     - OR ID number (for non-UoN Kenyan)
+     - OR Passport number (for international)
+     - School email
+     - Contact info
+     - Membership status
+   - Search/filter students by name, registration/ID/passport.
+   - Store borrowing history with fines if applicable.
+
+4. **Staff Management**
+   - Add staff records (teachers or interns).
+   - Only required fields:
+     - Name
+     - Book borrowed
+   - Staff borrowings are tracked but **not fined** for late returns.
+
+5. **Book & Resource Management**
+   - Add/edit/delete resources.
+   - Book attributes:
+     - Title
+     - Author/Publisher
+     - ISBN/Unique ID
+     - Copies available
+     - Category (HSK 1–5, Culture, OR custom categories)
+     - Shelf location
+   - Allow adding books without a category.
+   - Allow librarians to add new categories.
+   - Stock management: check availability of copies.
+
+6. **Borrowing & Returning**
+   - **Borrow workflow**:
+     - Select student or staff → select book → confirm borrow.
+     - Maximum borrow period for students: **3 days** (fixed).
+     - Staff: flexible borrowing, no fines.
+   - **Rules**:
+     - Students: max 3 items at once.
+     - Staff: no borrowing limit.
+   - **Return workflow**:
+     - Search by student/staff → select book → return.
+     - If student is late → auto fine (e.g., 20 KES/day late).
+     - Staff: no fines.
+   - Update stock count after each borrow/return.
+
+7. **Reports & Analytics**
+   - Generate reports for:
+     - Most borrowed books (all categories).
+     - Most active students (by borrow count).
+     - Borrowing trends by category/HSK level.
+     - Current stock status.
+     - Overdue items list (students only).
+     - Staff borrow records (no fines).
+   - Export reports to PDF/Excel.
+
+8. **Search & Filters**
+   - Search students by name, ID, or registration number.
+   - Search books by name, category, or availability.
+   - Filter books by category (HSK 1–5, custom categories).
+
+9. **Technical Setup**
+   - Framework: Flask (with Blueprints).
+   - Database: MySQL (flask_sqlalchemy + Flask-Migrate).
+   - Templates: Jinja2 with Bootstrap/Tailwind CSS.
+   - Authentication: Flask-Login with role-based access.
+   - Hosted locally (no internet access required).
+   - Example seed data: HSK 1–5 sample books and categories.
+   - Provide setup instructions for MySQL (XAMPP or standalone).
+
+### Output:
+- Full Flask project with:
+  - `app.py` main entry.
+  - Blueprints for authentication, students, staff, books, borrowing, reports.
+  - `models.py` for Users, Students, Staff, Books, BorrowRecords, Fines, Categories.
+  - Templates with Bootstrap/Tailwind (login, dashboards, forms, reports).
+  - `static/` folder for CSS/JS.
+  - Database migrations with MySQL.
+  - Example seed data.
+  - Documentation on installation, configuration, and running locally.

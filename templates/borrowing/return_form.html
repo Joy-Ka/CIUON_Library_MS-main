@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Return Book - Confucius Institute Library{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-arrow-return-left"></i> Return Book</h2>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Return Details</h5>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong>Book:</strong> {{ borrow_record.book_ref.title }}
+            </div>
+            <div class="col-md-6">
+                <strong>Borrower:</strong> {{ borrow_record.borrower_name }} ({{ borrow_record.borrower_type }})
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong>Borrowed Date:</strong> {{ borrow_record.borrowed_at.strftime('%Y-%m-%d') }}
+            </div>
+            <div class="col-md-6">
+                <strong>Due Date:</strong> {{ borrow_record.due_date.strftime('%Y-%m-%d') }}
+                {% if borrow_record.is_overdue %}
+                <span class="badge bg-danger ms-2">{{ borrow_record.days_overdue }} days overdue</span>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if borrow_record.is_overdue and borrow_record.student_id %}
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle"></i>
+            This book is overdue by {{ borrow_record.days_overdue }} days. 
+            A fine of {{ borrow_record.days_overdue * 20 }} KES will be applied.
+        </div>
+        {% endif %}
+
+        <form method="POST">
+            <div class="mb-3">
+                <label for="notes" class="form-label">Return Notes (Optional)</label>
+                <textarea class="form-control" id="notes" name="notes" rows="3">{{ borrow_record.notes or '' }}</textarea>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('borrowing.list_borrows') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check"></i> Confirm Return
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit' if student else 'Add' }} Student - Confucius Institute Library{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4>{{ 'Edit' if student else 'Add New' }} Student</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               value="{{ student.name if student else '' }}" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="registration_number" class="form-label">Registration Number</label>
+                                <input type="text" class="form-control" id="registration_number" name="registration_number" 
+                                       value="{{ student.registration_number if student else '' }}" 
+                                       placeholder="For UoN students">
+                                <small class="text-muted">For University of Nairobi students</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="id_number" class="form-label">ID Number</label>
+                                <input type="text" class="form-control" id="id_number" name="id_number" 
+                                       value="{{ student.id_number if student else '' }}" 
+                                       placeholder="For Kenyan non-UoN">
+                                <small class="text-muted">For Kenyan non-UoN students</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="passport_number" class="form-label">Passport Number</label>
+                                <input type="text" class="form-control" id="passport_number" name="passport_number" 
+                                       value="{{ student.passport_number if student else '' }}" 
+                                       placeholder="For international">
+                                <small class="text-muted">For international students</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> At least one identifier (Registration Number, ID Number, or Passport Number) is required.
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email *</label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               value="{{ student.email if student else '' }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phone" name="phone" 
+                               value="{{ student.phone if student else '' }}" 
+                               placeholder="+254...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="membership_status" class="form-label">Membership Status</label>
+                        <select class="form-select" id="membership_status" name="membership_status">
+                            <option value="active" {{ 'selected' if student and student.membership_status == 'active' else '' }}>Active</option>
+                            <option value="suspended" {{ 'selected' if student and student.membership_status == 'suspended' else '' }}>Suspended</option>
+                            <option value="expired" {{ 'selected' if student and student.membership_status == 'expired' else '' }}>Expired</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('students.list_students') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Students
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check"></i> {{ 'Update' if student else 'Add' }} Student
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

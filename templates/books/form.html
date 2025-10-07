@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit' if book else 'Add' }} Book - Confucius Institute Library{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4>{{ 'Edit' if book else 'Add New' }} Book</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title *</label>
+                        <input type="text" class="form-control" id="title" name="title" 
+                               value="{{ book.title if book else '' }}" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="author" class="form-label">Author</label>
+                                <input type="text" class="form-control" id="author" name="author" 
+                                       value="{{ book.author if book else '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="publisher" class="form-label">Publisher</label>
+                                <input type="text" class="form-control" id="publisher" name="publisher" 
+                                       value="{{ book.publisher if book else '' }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="isbn" class="form-label">ISBN</label>
+                                <input type="text" class="form-control" id="isbn" name="isbn" 
+                                       value="{{ book.isbn if book else '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="unique_id" class="form-label">Unique ID *</label>
+                                <input type="text" class="form-control" id="unique_id" name="unique_id" 
+                                       value="{{ book.unique_id if book else '' }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="category_id" class="form-label">Category</label>
+                                <select class="form-select" id="category_id" name="category_id">
+                                    <option value="">Uncategorized</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}" 
+                                            {{ 'selected' if book and book.category_id == category.id else '' }}>
+                                        {{ category.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="total_copies" class="form-label">Total Copies</label>
+                                <input type="number" class="form-control" id="total_copies" name="total_copies" 
+                                       value="{{ book.total_copies if book else '1' }}" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="shelf_location" class="form-label">Shelf Location</label>
+                        <input type="text" class="form-control" id="shelf_location" name="shelf_location" 
+                               value="{{ book.shelf_location if book else '' }}" 
+                               placeholder="e.g., A1-01, B2-15">
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('books.list_books') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Books
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check"></i> {{ 'Update' if book else 'Add' }} Book
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

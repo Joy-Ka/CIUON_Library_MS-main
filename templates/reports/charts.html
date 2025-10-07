@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Charts & Analytics - Confucius Institute Library{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-graph-up"></i> Charts & Analytics</h2>
+    <a href="{{ url_for('reports.index') }}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Back to Reports
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Monthly Borrowing Trends</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="monthlyBorrowsChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Category Distribution</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="categoryChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Fine Collection Trends</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="fineTrendsChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Student vs Staff Borrowing</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="borrowerRatioChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Fetch chart data
+fetch('{{ url_for("reports.charts_data") }}')
+    .then(response => response.json())
+    .then(data => {
+        // Monthly Borrows Chart
+        const monthlyCtx = document.getElementById('monthlyBorrowsChart').getContext('2d');
+        new Chart(monthlyCtx, {
+            type: 'line',
+            data: {
+                labels: data.monthly_borrows.map(item => item.month),
+                datasets: [{
+                    label: 'Books Borrowed',
+                    data: data.monthly_borrows.map(item => item.count),
+                    borderColor: '#d32f2f',
+                    backgroundColor: 'rgba(211, 47, 47, 0.1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Category Distribution Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: data.category_distribution.map(item => item.category),
+                datasets: [{
+                    data: data.category_distribution.map(item => item.count),
+                    backgroundColor: [
+                        '#d32f2f', '#f44336', '#e57373', '#ffcdd2',
+                        '#2196f3', '#03a9f4', '#81c784', '#ffb74d'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Fine Trends Chart
+        const fineCtx = document.getElementById('fineTrendsChart').getContext('2d');
+        new Chart(fineCtx, {
+            type: 'bar',
+            data: {
+                labels: data.fine_trends.map(item => item.month),
+                datasets: [{
+                    label: 'Amount Collected (KES)',
+                    data: data.fine_trends.map(item => item.amount),
+                    backgroundColor: '#f44336'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Borrower Ratio Chart
+        const ratioCtx = document.getElementById('borrowerRatioChart').getContext('2d');
+        new Chart(ratioCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Students', 'Staff'],
+                datasets: [{
+                    data: [data.borrower_ratio.students, data.borrower_ratio.staff],
+                    backgroundColor: ['#d32f2f', '#2196f3']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error loading chart data:', error);
+    });
+</script>
+{% endblock %}

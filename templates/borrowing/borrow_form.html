@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Borrow Book - Confucius Institute Library{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-plus-circle"></i> Borrow Book</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label for="borrower_type" class="form-label">Borrower Type</label>
+                <select class="form-select" id="borrower_type" name="borrower_type" required>
+                    <option value="">Select Borrower Type</option>
+                    <option value="student">Student</option>
+                    <option value="staff">Staff</option>
+                </select>
+            </div>
+
+            <div class="mb-3" id="student_select" style="display: none;">
+                <label for="student_id" class="form-label">Student</label>
+                <select class="form-select" id="student_id" name="student_id">
+                    <option value="">Select Student</option>
+                </select>
+            </div>
+
+            <div class="mb-3" id="staff_select" style="display: none;">
+                <label for="staff_id" class="form-label">Staff</label>
+                <select class="form-select" id="staff_id" name="staff_id">
+                    <option value="">Select Staff</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="book_id" class="form-label">Book</label>
+                <select class="form-select" id="book_id" name="book_id" required>
+                    <option value="">Select Book</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes (Optional)</label>
+                <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('borrowing.list_borrows') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check"></i> Borrow Book
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById('borrower_type').addEventListener('change', function() {
+    const studentSelect = document.getElementById('student_select');
+    const staffSelect = document.getElementById('staff_select');
+    
+    if (this.value === 'student') {
+        studentSelect.style.display = 'block';
+        staffSelect.style.display = 'none';
+        // Load students via AJAX
+        loadStudents();
+    } else if (this.value === 'staff') {
+        studentSelect.style.display = 'none';
+        staffSelect.style.display = 'block';
+        // Load staff via AJAX
+        loadStaff();
+    } else {
+        studentSelect.style.display = 'none';
+        staffSelect.style.display = 'none';
+    }
+});
+
+function loadStudents() {
+    // Simple implementation - would use AJAX in production
+    // For now, we'll leave this as a basic form
+}
+
+function loadStaff() {
+    // Simple implementation - would use AJAX in production
+    // For now, we'll leave this as a basic form
+}
+</script>
+{% endblock %}

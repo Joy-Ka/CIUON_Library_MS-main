@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Confucius Institute Library{% endblock %}
+
+{% block content %}
+<div class="dashboard-background">
+<div class="container-fluid">
+<div class="row">
+    <div class="col-12">
+        <h2><i class="bi bi-house"></i> Dashboard</h2>
+        <p class="text-muted">Welcome to the Confucius Institute Library Management System</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Students</h5>
+                        <h3>{{ total_students }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-people fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Staff</h5>
+                        <h3>{{ total_staff }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-person-badge fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Books</h5>
+                        <h3>{{ total_books }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-journal-bookmark fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Active Borrows</h5>
+                        <h3>{{ active_borrows }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-arrow-left-right fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if current_user.role == 'admin' %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card bg-danger text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Total Unpaid Fines</h5>
+                        <h3>KES {{ "%.2f"|format(total_fines) }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-secondary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Overdue Books</h5>
+                        <h3>{{ overdue_books|length }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-clock fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-clock-history"></i> Recent Borrowing Activity</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_borrows %}
+                <div class="list-group list-group-flush">
+                    {% for borrow in recent_borrows %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ borrow.book_ref.title }}</h6>
+                            <small>{{ borrow.borrowed_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        <p class="mb-1">
+                            <strong>{{ borrow.borrower_type }}:</strong> {{ borrow.borrower_name }}
+                        </p>
+                        <small class="text-muted">Due: {{ borrow.due_date.strftime('%Y-%m-%d') }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No recent borrowing activity</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    {% if overdue_books %}
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-exclamation-triangle"></i> Overdue Books</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    {% for borrow in overdue_books[:5] %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ borrow.book_ref.title }}</h6>
+                            <small class="text-danger">{{ borrow.days_overdue }} days overdue</small>
+                        </div>
+                        <p class="mb-1">
+                            <strong>{{ borrow.borrower_type }}:</strong> {{ borrow.borrower_name }}
+                        </p>
+                        <small class="text-muted">Due: {{ borrow.due_date.strftime('%Y-%m-%d') }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if overdue_books|length > 5 %}
+                <div class="text-center mt-2">
+                    <a href="{{ url_for('reports.overdue_items') }}" class="btn btn-sm btn-outline-primary">
+                        View All Overdue Items
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-lightning"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('borrowing.borrow_book') }}" class="btn btn-primary w-100">
+                            <i class="bi bi-plus-circle"></i> Borrow Book
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('students.add_student') }}" class="btn btn-success w-100">
+                            <i class="bi bi-person-plus"></i> Add Student
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('books.add_book') }}" class="btn btn-info w-100">
+                            <i class="bi bi-journal-plus"></i> Add Book
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('borrowing.list_fines') }}" class="btn btn-warning w-100">
+                            <i class="bi bi-cash"></i> View Fines
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}

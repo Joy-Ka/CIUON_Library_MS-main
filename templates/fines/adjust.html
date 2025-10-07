@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Adjust Fine - Confucius Institute Library{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4>Adjust Fine</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <strong>Student:</strong> {{ fine.student_ref.name }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Book:</strong> {{ fine.borrow_record.book_ref.title }}
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <strong>Current Amount:</strong> KES {{ "%.2f"|format(fine.amount) }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Original Amount:</strong> KES {{ "%.2f"|format(fine.original_amount or fine.amount) }}
+                    </div>
+                </div>
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="action_type" class="form-label">Action</label>
+                        <select class="form-select" id="action_type" name="action_type" required>
+                            <option value="">Select Action</option>
+                            <option value="waive">Waive Fine (Set to KES 0)</option>
+                            <option value="adjust">Adjust Amount</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3" id="new_amount_div" style="display: none;">
+                        <label for="new_amount" class="form-label">New Amount (KES)</label>
+                        <input type="number" step="0.01" min="0" class="form-control" 
+                               id="new_amount" name="new_amount" value="{{ fine.amount }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reason" class="form-label">Reason *</label>
+                        <textarea class="form-control" id="reason" name="reason" rows="3" required 
+                                  placeholder="Provide a reason for this adjustment..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('fines.list_fines') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-check"></i> Apply Adjustment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('action_type').addEventListener('change', function() {
+    const newAmountDiv = document.getElementById('new_amount_div');
+    if (this.value === 'adjust') {
+        newAmountDiv.style.display = 'block';
+    } else {
+        newAmountDiv.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}
