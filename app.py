@@ -15,8 +15,12 @@ def create_app():
     
     # Configuration
     app.config['SECRET_KEY'] = os.environ.get('SESSION_SECRET', 'dev-secret-key-confucius-institute')
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///confucius_library.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "pool_recycle": 300,
+        "pool_pre_ping": True,
+    }
     
     # Initialize extensions with app
     db.init_app(app)
