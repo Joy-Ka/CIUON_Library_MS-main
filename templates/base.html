@@ -8,138 +8,175 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .navbar-brand {
-            font-weight: bold;
-            color: #d32f2f !important;
+        .sidebar-link {
+            transition: all 0.3s ease;
         }
-        .ci-header {
-            background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%);
-            color: white;
-            padding: 1rem 0;
+        .sidebar-link:hover {
+            background-color: rgba(211, 47, 47, 0.1);
+            border-left: 4px solid #d32f2f;
+            padding-left: 1.25rem;
         }
-        .sidebar {
-            min-height: calc(100vh - 100px);
-            background-color: #f8f9fa;
-        }
-        .card-header {
-            background-color: #d32f2f;
-            color: white;
-        }
-        .btn-primary {
-            background-color: #d32f2f;
-            border-color: #d32f2f;
-        }
-        .btn-primary:hover {
-            background-color: #b71c1c;
-            border-color: #b71c1c;
-        }
-        .dashboard-background {
-            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
-                        url('/static/images/background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            min-height: 100vh;
+        .sidebar-link.active {
+            background-color: rgba(211, 47, 47, 0.15);
+            border-left: 4px solid #d32f2f;
+            padding-left: 1.25rem;
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-50">
     {% if current_user.is_authenticated %}
-    <nav class="navbar navbar-expand-lg navbar-dark ci-header">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
-                <i class="bi bi-book"></i> Confucius Institute Library
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard.index') }}">
-                            <i class="bi bi-house"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('students.list_students') }}">
-                            <i class="bi bi-people"></i> Students
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('staff.list_staff') }}">
-                            <i class="bi bi-person-badge"></i> Staff
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('books.list_books') }}">
-                            <i class="bi bi-journal-bookmark"></i> Books
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('borrowing.list_borrows') }}">
-                            <i class="bi bi-arrow-left-right"></i> Borrowing
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('fines.list_fines') }}">
-                            <i class="bi bi-cash"></i> Fines
-                        </a>
-                    </li>
-                    {% if current_user.role == 'admin' %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear"></i> Admin
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('reports.index') }}">
-                                <i class="bi bi-graph-up"></i> Reports
-                            </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('audit.list_audit_logs') }}">
-                                <i class="bi bi-list-check"></i> Audit Logs
-                            </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('backup.list_backups') }}">
-                                <i class="bi bi-archive"></i> Backups
-                            </a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('fines.fine_statistics') }}">
-                                <i class="bi bi-bar-chart"></i> Fine Statistics
-                            </a></li>
-                        </ul>
-                    </li>
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i> {{ current_user.username }} ({{ current_user.role.title() }})
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">
-                                <i class="bi bi-box-arrow-right"></i> Logout
-                            </a></li>
-                        </ul>
-                    </li>
-                </ul>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Vertical Sidebar -->
+        <aside class="w-64 bg-gradient-to-b from-red-600 to-red-700 text-white flex-shrink-0 overflow-y-auto">
+            <!-- Logo/Brand Section -->
+            <div class="p-6 border-b border-red-500">
+                <a href="{{ url_for('dashboard.index') }}" class="flex items-center gap-3 text-white hover:text-red-100 transition">
+                    <i class="bi bi-book text-3xl"></i>
+                    <div>
+                        <div class="font-bold text-lg leading-tight">Confucius Institute</div>
+                        <div class="text-sm text-red-200">Library System</div>
+                    </div>
+                </a>
             </div>
-        </div>
-    </nav>
-    {% endif %}
 
-    <div class="container-fluid mt-3">
+            <!-- Navigation Links -->
+            <nav class="py-4">
+                <a href="{{ url_for('dashboard.index') }}" class="sidebar-link flex items-center gap-3 px-6 py-3 text-white hover:bg-red-500 transition">
+                    <i class="bi bi-house text-xl"></i>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="{{ url_for('students.list_students') }}" class="sidebar-link flex items-center gap-3 px-6 py-3 text-white hover:bg-red-500 transition">
+                    <i class="bi bi-people text-xl"></i>
+                    <span class="font-medium">Students</span>
+                </a>
+
+                <a href="{{ url_for('staff.list_staff') }}" class="sidebar-link flex items-center gap-3 px-6 py-3 text-white hover:bg-red-500 transition">
+                    <i class="bi bi-person-badge text-xl"></i>
+                    <span class="font-medium">Staff</span>
+                </a>
+
+                <a href="{{ url_for('books.list_books') }}" class="sidebar-link flex items-center gap-3 px-6 py-3 text-white hover:bg-red-500 transition">
+                    <i class="bi bi-journal-bookmark text-xl"></i>
+                    <span class="font-medium">Books</span>
+                </a>
+
+                <a href="{{ url_for('borrowing.list_borrows') }}" class="sidebar-link flex items-center gap-3 px-6 py-3 text-white hover:bg-red-500 transition">
+                    <i class="bi bi-arrow-left-right text-xl"></i>
+                    <span class="font-medium">Borrowing</span>
+                </a>
+
+                <a href="{{ url_for('fines.list_fines') }}" class="sidebar-link flex items-center gap-3 px-6 py-3 text-white hover:bg-red-500 transition">
+                    <i class="bi bi-cash text-xl"></i>
+                    <span class="font-medium">Fines</span>
+                </a>
+
+                {% if current_user.role == 'admin' %}
+                <!-- Admin Section -->
+                <div class="mt-6 pt-6 border-t border-red-500">
+                    <div class="px-6 py-2 text-sm font-semibold text-red-200 uppercase tracking-wider">Admin Tools</div>
+                    
+                    <a href="{{ url_for('reports.index') }}" class="sidebar-link flex items-center gap-3 px-6 py-3 text-white hover:bg-red-500 transition">
+                        <i class="bi bi-graph-up text-xl"></i>
+                        <span class="font-medium">Reports</span>
+                    </a>
+
+                    <a href="{{ url_for('audit.list_audit_logs') }}" class="sidebar-link flex items-center gap-3 px-6 py-3 text-white hover:bg-red-500 transition">
+                        <i class="bi bi-list-check text-xl"></i>
+                        <span class="font-medium">Audit Logs</span>
+                    </a>
+
+                    <a href="{{ url_for('backup.list_backups') }}" class="sidebar-link flex items-center gap-3 px-6 py-3 text-white hover:bg-red-500 transition">
+                        <i class="bi bi-archive text-xl"></i>
+                        <span class="font-medium">Backups</span>
+                    </a>
+
+                    <a href="{{ url_for('fines.fine_statistics') }}" class="sidebar-link flex items-center gap-3 px-6 py-3 text-white hover:bg-red-500 transition">
+                        <i class="bi bi-bar-chart text-xl"></i>
+                        <span class="font-medium">Fine Statistics</span>
+                    </a>
+                </div>
+                {% endif %}
+            </nav>
+
+            <!-- User Profile & Logout -->
+            <div class="absolute bottom-0 left-0 right-0 border-t border-red-500 bg-red-800 p-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <i class="bi bi-person-circle text-3xl"></i>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-semibold truncate">{{ current_user.username }}</div>
+                        <div class="text-xs text-red-200">{{ current_user.role.title() }}</div>
+                    </div>
+                </div>
+                <a href="{{ url_for('auth.logout') }}" class="flex items-center gap-2 justify-center w-full px-4 py-2 bg-red-900 hover:bg-red-950 rounded-lg transition">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Bar (Optional - for breadcrumbs, etc) -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <h1 class="text-xl font-semibold text-gray-800">{% block page_header %}Library Management{% endblock %}</h1>
+                    <div class="text-sm text-gray-600">
+                        <i class="bi bi-calendar"></i>
+                        <span id="current-date"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content with Flash Messages -->
+            <main class="flex-1 overflow-y-auto bg-gray-50">
+                <div class="p-6">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show mb-4">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+    {% else %}
+    <!-- Login Page Layout (No Sidebar) -->
+    <div class="min-h-screen">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
+                <div class="container mt-3">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
         {% endwith %}
 
         {% block content %}{% endblock %}
     </div>
+    {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Display current date
+        const dateElement = document.getElementById('current-date');
+        if (dateElement) {
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            dateElement.textContent = today.toLocaleDateString('en-US', options);
+        }
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
