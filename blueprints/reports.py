@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from models import Book, Student, Staff, BorrowRecord, Fine, Category, db
 from sqlalchemy import func, desc
+from datetime import datetime, timedelta
 
 reports_bp = Blueprint('reports', __name__)
 
@@ -34,7 +35,7 @@ def most_borrowed_books():
 
 @reports_bp.route('/active-students')
 @login_required
-def most_active_students():
+def active_students():
     if current_user.role != 'admin':
         flash('Access denied. Admin privileges required.', 'error')
         return redirect(url_for('dashboard.index'))
