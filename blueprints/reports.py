@@ -99,6 +99,10 @@ def stock_status():
 @reports_bp.route('/overdue-items')
 @login_required
 def overdue_items():
+    if current_user.role != 'admin':
+        flash('Access denied. Admin privileges required.', 'error')
+        return redirect(url_for('dashboard.index'))
+    
     # Get overdue items (students only have fines)
     overdue_borrows = BorrowRecord.query.filter(
         BorrowRecord.returned_at.is_(None),
