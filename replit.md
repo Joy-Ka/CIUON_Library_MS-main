@@ -93,18 +93,23 @@ Preferred communication style: Simple, everyday language.
 - **Security Requirements**: SESSION_SECRET must be set in environment to prevent security vulnerabilities
 
 ### Email Notification System
-- **Email Service**: Configured to use SendGrid for transactional emails
-- **Integration Status**: SendGrid Replit integration was dismissed - system operates in simulation mode
-- **Simulation Mode**: When SENDGRID_API_KEY is not set, emails are logged to database and console instead of being sent
+- **Email Service**: Supports both Gmail SMTP and SendGrid for transactional emails
+- **Gmail SMTP Setup** (Recommended):
+  1. Enable 2-factor authentication on your Gmail account
+  2. Generate an App Password: Google Account → Security → 2-Step Verification → App passwords
+  3. Set environment variables in Replit Secrets:
+     - `GMAIL_USER`: Your Gmail address (e.g., library@gmail.com)
+     - `GMAIL_APP_PASSWORD`: The 16-character app password (no spaces)
+- **SendGrid Alternative**:
+  - Set `SENDGRID_API_KEY` environment variable with your SendGrid API key
+  - Set `FROM_EMAIL` to your verified sender email
+- **Simulation Mode**: When no credentials are set, emails are logged to database and console instead of being sent
 - **Email Types**:
   - Due Date Reminders: Sent 1-2 days before book due date (configurable per student)
   - Overdue Notices: Sent for books past their due date with fine information
 - **Fine Policy**: 3-day loan period for students, 20 KES per day overdue fine
 - **Notification Preferences**: Students can configure email preferences for reminders
 - **Email Logging**: All email attempts (sent/failed) are logged to EmailLog table for auditing
-- **Future Setup**: To enable actual email sending, either:
-  1. Set up SendGrid Replit connector integration (preferred - automatic key management)
-  2. Or set SENDGRID_API_KEY environment variable manually with your SendGrid API key
 
 ## Recent Changes (October 2025)
 

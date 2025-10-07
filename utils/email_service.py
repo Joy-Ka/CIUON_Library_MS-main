@@ -1,4 +1,7 @@
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
 from flask import current_app
 from models import EmailLog, NotificationPreference, BorrowRecord, Student, db
@@ -6,11 +9,13 @@ from utils.audit_logger import log_action
 
 # Email service configuration
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
-FROM_EMAIL = os.environ.get('FROM_EMAIL', 'library@confucius.uonbi.ac.ke')
+GMAIL_USER = os.environ.get('GMAIL_USER')
+GMAIL_APP_PASSWORD = os.environ.get('GMAIL_APP_PASSWORD')
+FROM_EMAIL = os.environ.get('FROM_EMAIL', GMAIL_USER or 'library@confucius.uonbi.ac.ke')
 
 def send_email(to_email, subject, body, email_type, student_id=None, borrow_record_id=None):
     """
-    Send an email using SendGrid and log it
+    Send an email using Gmail SMTP or SendGrid and log it
     
     Args:
         to_email (str): Recipient email address
@@ -24,8 +29,32 @@ def send_email(to_email, subject, body, email_type, student_id=None, borrow_reco
         bool: True if sent successfully, False otherwise
     """
     try:
-        # Try to send real email if SendGrid API key is available
-        if SENDGRID_API_KEY:
+        status = 'sent'
+        error_message = None
+        
+        # Try Gmail SMTP first if credentials are available
+        if GMAIL_USER and GMAIL_APP_PASSWORD:
+            try:
+                msg = MIMEMultipart()
+                msg['From'] = GMAIL_USER
+                msg['To'] = to_email
+                msg['Subject'] = subject
+                msg.attach(MIMEText(body, 'plain'))
+                
+                # Connect to Gmail SMTP server
+                with smtplib.SMTP('smtp.gmail.com', 587) as server:
+                    server.starttls()
+                    server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+                    server.send_message(msg)
+                
+                status = 'sent'
+                error_message = None
+            except Exception as gmail_error:
+                status = 'failed'
+                error_message = f'Gmail SMTP error: {str(gmail_error)}'
+        
+        # Try SendGrid if Gmail failed or not configured
+        elif SENDGRID_API_KEY:
             from sendgrid import SendGridAPIClient
             from sendgrid.helpers.mail import Mail
             
@@ -48,7 +77,7 @@ def send_email(to_email, subject, body, email_type, student_id=None, borrow_reco
                 status = 'failed'
                 error_message = f'SendGrid error: {response.status_code}'
         else:
-            # Simulate email sending if no API key (development mode)
+            # Simulate email sending if no credentials (development mode)
             current_app.logger.info(f"Email simulation - To: {to_email}, Subject: {subject}")
             status = 'sent'
             error_message = None

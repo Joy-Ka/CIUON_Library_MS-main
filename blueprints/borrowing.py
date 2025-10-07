@@ -41,7 +41,8 @@ def borrow_book():
             flash('This book is not available for borrowing', 'error')
             students = Student.query.order_by(Student.name).all()
             staff = Staff.query.order_by(Staff.name).all()
-            books = Book.query.filter(Book.available_copies > 0).order_by(Book.title).all()
+            all_books = Book.query.order_by(Book.title).all()
+            books = [book for book in all_books if book.available_copies > 0]
             return render_template('borrowing/borrow_form.html', students=students, staff=staff, books=books)
         
         # Check student borrowing limits
@@ -50,8 +51,9 @@ def borrow_book():
             if student.current_borrowed_count >= 3:
                 flash('Student has reached the maximum borrowing limit of 3 books', 'error')
                 students = Student.query.order_by(Student.name).all()
-                staff = Staff.query.order_by(Staff.name).all()
-                books = Book.query.filter(Book.available_copies > 0).order_by(Book.title).all()
+                staff = Staff.query.order_by(Student.name).all()
+                all_books = Book.query.order_by(Book.title).all()
+                books = [book for book in all_books if book.available_copies > 0]
                 return render_template('borrowing/borrow_form.html', students=students, staff=staff, books=books)
         
         # Create borrow record
@@ -92,7 +94,9 @@ def borrow_book():
     # GET request - load data for dropdowns
     students = Student.query.order_by(Student.name).all()
     staff = Staff.query.order_by(Staff.name).all()
-    books = Book.query.filter(Book.available_copies > 0).order_by(Book.title).all()
+    # Get all books and filter by available copies in Python since it's a property
+    all_books = Book.query.order_by(Book.title).all()
+    books = [book for book in all_books if book.available_copies > 0]
     
     return render_template('borrowing/borrow_form.html', students=students, staff=staff, books=books)
 
