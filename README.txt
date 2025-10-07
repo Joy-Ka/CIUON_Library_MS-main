@@ -1,4 +1,3 @@
-
 CONFUCIUS INSTITUTE LIBRARY MANAGEMENT SYSTEM
 MySQL 8.0 Database Setup Instructions
 
@@ -222,17 +221,17 @@ NOTES FOR MYSQL 8.0 SETUP
 
 1. Make sure MySQL 8.0 is installed and running
 2. Create a database user with appropriate privileges:
-   
+
    CREATE USER 'library_user'@'localhost' IDENTIFIED BY 'your_strong_password';
    GRANT ALL PRIVILEGES ON confucius_library.* TO 'library_user'@'localhost';
    FLUSH PRIVILEGES;
 
 3. Update your Flask application's DATABASE_URL environment variable:
-   
+
    DATABASE_URL=mysql+pymysql://library_user:your_strong_password@localhost/confucius_library
 
 4. Install MySQL Python connector:
-   
+
    pip install pymysql
 
 5. The application uses SQLAlchemy ORM which will handle most database operations.
@@ -268,5 +267,20 @@ mysqldump -u library_user -p confucius_library > backup_$(date +%Y%m%d_%H%M%S).s
 
 To restore from backup:
 mysql -u library_user -p confucius_library < backup_file.sql
+
+=====================================================
+
+EMAIL NOTIFICATION SETUP
+=====================================================
+
+For detailed instructions on configuring Gmail SMTP for sending real email notifications,
+please see the EMAIL_SETUP.md file in the project root directory.
+
+Quick Setup:
+1. Enable 2-Factor Authentication on your Gmail account
+2. Generate an App Password from Google Account Security settings
+3. Add GMAIL_USER and GMAIL_APP_PASSWORD to Replit Secrets
+4. Restart the application
+5. Test using the "Test Email" button on the Dashboard
 
 =====================================================
