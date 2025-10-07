@@ -3,209 +3,188 @@
 {% block title %}Dashboard - Confucius Institute Library{% endblock %}
 
 {% block content %}
-<div class="dashboard-background">
-<div class="container-fluid">
-<div class="row">
-    <div class="col-12">
-        <h2><i class="bi bi-house"></i> Dashboard</h2>
-        <p class="text-muted">Welcome to the Confucius Institute Library Management System</p>
-    </div>
-</div>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" style="background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/static/images/background.jpg'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 flex items-center gap-2">
+                <i class="bi bi-house text-red-600"></i> Dashboard
+            </h2>
+            <p class="text-gray-600 mt-2">Welcome to the Confucius Institute Library Management System</p>
+        </div>
 
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card bg-primary text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white transform transition hover:scale-105">
+                <div class="flex justify-between items-start">
                     <div>
-                        <h5>Students</h5>
-                        <h3>{{ total_students }}</h3>
+                        <h5 class="text-red-100 text-sm font-medium mb-2">Students</h5>
+                        <h3 class="text-4xl font-bold">{{ total_students }}</h3>
                     </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-people fs-1"></i>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                        <i class="bi bi-people text-4xl"></i>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-success text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h5>Staff</h5>
-                        <h3>{{ total_staff }}</h3>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-person-badge fs-1"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-info text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h5>Books</h5>
-                        <h3>{{ total_books }}</h3>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-journal-bookmark fs-1"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-warning text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h5>Active Borrows</h5>
-                        <h3>{{ active_borrows }}</h3>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-arrow-left-right fs-1"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-{% if current_user.role == 'admin' %}
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card bg-danger text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
+            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white transform transition hover:scale-105">
+                <div class="flex justify-between items-start">
                     <div>
-                        <h5>Total Unpaid Fines</h5>
-                        <h3>KES {{ "%.2f"|format(total_fines) }}</h3>
+                        <h5 class="text-green-100 text-sm font-medium mb-2">Staff</h5>
+                        <h3 class="text-4xl font-bold">{{ total_staff }}</h3>
                     </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                        <i class="bi bi-person-badge text-4xl"></i>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card bg-secondary text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h5>Overdue Books</h5>
-                        <h3>{{ overdue_books|length }}</h3>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-clock fs-1"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h5><i class="bi bi-clock-history"></i> Recent Borrowing Activity</h5>
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white transform transition hover:scale-105">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h5 class="text-blue-100 text-sm font-medium mb-2">Books</h5>
+                        <h3 class="text-4xl font-bold">{{ total_books }}</h3>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                        <i class="bi bi-journal-bookmark text-4xl"></i>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                {% if recent_borrows %}
-                <div class="list-group list-group-flush">
-                    {% for borrow in recent_borrows %}
-                    <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">{{ borrow.book_ref.title }}</h6>
-                            <small>{{ borrow.borrowed_at.strftime('%Y-%m-%d %H:%M') }}</small>
+
+            <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg p-6 text-white transform transition hover:scale-105">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h5 class="text-amber-100 text-sm font-medium mb-2">Active Borrows</h5>
+                        <h3 class="text-4xl font-bold">{{ active_borrows }}</h3>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                        <i class="bi bi-arrow-left-right text-4xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if current_user.role == 'admin' %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-rose-500 to-rose-600 rounded-xl shadow-lg p-6 text-white transform transition hover:scale-105">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h5 class="text-rose-100 text-sm font-medium mb-2">Total Unpaid Fines</h5>
+                        <h3 class="text-4xl font-bold">KES {{ "%.2f"|format(total_fines) }}</h3>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                        <i class="bi bi-exclamation-triangle text-4xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl shadow-lg p-6 text-white transform transition hover:scale-105">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h5 class="text-gray-100 text-sm font-medium mb-2">Overdue Books</h5>
+                        <h3 class="text-4xl font-bold">{{ overdue_books|length }}</h3>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                        <i class="bi bi-clock text-4xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-red-600 to-red-700 px-6 py-4">
+                    <h5 class="text-white font-semibold flex items-center gap-2">
+                        <i class="bi bi-clock-history"></i> Recent Borrowing Activity
+                    </h5>
+                </div>
+                <div class="p-6">
+                    {% if recent_borrows %}
+                    <div class="space-y-4">
+                        {% for borrow in recent_borrows %}
+                        <div class="border-l-4 border-red-500 pl-4 py-2 hover:bg-gray-50 transition">
+                            <div class="flex justify-between items-start mb-1">
+                                <h6 class="font-semibold text-gray-800">{{ borrow.book_ref.title }}</h6>
+                                <small class="text-gray-500">{{ borrow.borrowed_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <p class="text-sm text-gray-700 mb-1">
+                                <strong>{{ borrow.borrower_type }}:</strong> {{ borrow.borrower_name }}
+                            </p>
+                            <small class="text-gray-500">Due: {{ borrow.due_date.strftime('%Y-%m-%d') }}</small>
                         </div>
-                        <p class="mb-1">
-                            <strong>{{ borrow.borrower_type }}:</strong> {{ borrow.borrower_name }}
-                        </p>
-                        <small class="text-muted">Due: {{ borrow.due_date.strftime('%Y-%m-%d') }}</small>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+                    {% else %}
+                    <p class="text-gray-500">No recent borrowing activity</p>
+                    {% endif %}
                 </div>
-                {% else %}
-                <p class="text-muted">No recent borrowing activity</p>
-                {% endif %}
             </div>
-        </div>
-    </div>
-    
-    {% if overdue_books %}
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h5><i class="bi bi-exclamation-triangle"></i> Overdue Books</h5>
-            </div>
-            <div class="card-body">
-                <div class="list-group list-group-flush">
-                    {% for borrow in overdue_books[:5] %}
-                    <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">{{ borrow.book_ref.title }}</h6>
-                            <small class="text-danger">{{ borrow.days_overdue }} days overdue</small>
+            
+            {% if overdue_books %}
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-red-600 to-red-700 px-6 py-4">
+                    <h5 class="text-white font-semibold flex items-center gap-2">
+                        <i class="bi bi-exclamation-triangle"></i> Overdue Books
+                    </h5>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        {% for borrow in overdue_books[:5] %}
+                        <div class="border-l-4 border-rose-500 pl-4 py-2 hover:bg-gray-50 transition">
+                            <div class="flex justify-between items-start mb-1">
+                                <h6 class="font-semibold text-gray-800">{{ borrow.book_ref.title }}</h6>
+                                <small class="text-red-600 font-medium">{{ borrow.days_overdue }} days overdue</small>
+                            </div>
+                            <p class="text-sm text-gray-700 mb-1">
+                                <strong>{{ borrow.borrower_type }}:</strong> {{ borrow.borrower_name }}
+                            </p>
+                            <small class="text-gray-500">Due: {{ borrow.due_date.strftime('%Y-%m-%d') }}</small>
                         </div>
-                        <p class="mb-1">
-                            <strong>{{ borrow.borrower_type }}:</strong> {{ borrow.borrower_name }}
-                        </p>
-                        <small class="text-muted">Due: {{ borrow.due_date.strftime('%Y-%m-%d') }}</small>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+                    {% if overdue_books|length > 5 %}
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('reports.overdue_items') }}" class="inline-block px-4 py-2 border border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition">
+                            View All Overdue Items
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
-                {% if overdue_books|length > 5 %}
-                <div class="text-center mt-2">
-                    <a href="{{ url_for('reports.overdue_items') }}" class="btn btn-sm btn-outline-primary">
-                        View All Overdue Items
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-red-600 to-red-700 px-6 py-4">
+                <h5 class="text-white font-semibold flex items-center gap-2">
+                    <i class="bi bi-lightning"></i> Quick Actions
+                </h5>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <a href="{{ url_for('borrowing.borrow_book') }}" class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-lg flex items-center justify-center gap-2 hover:from-red-600 hover:to-red-700 transform transition hover:scale-105 shadow-md">
+                        <i class="bi bi-plus-circle text-xl"></i>
+                        <span class="font-medium">Borrow Book</span>
+                    </a>
+                    
+                    <a href="{{ url_for('students.add_student') }}" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-lg flex items-center justify-center gap-2 hover:from-green-600 hover:to-green-700 transform transition hover:scale-105 shadow-md">
+                        <i class="bi bi-person-plus text-xl"></i>
+                        <span class="font-medium">Add Student</span>
+                    </a>
+                    
+                    <a href="{{ url_for('books.add_book') }}" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 rounded-lg flex items-center justify-center gap-2 hover:from-blue-600 hover:to-blue-700 transform transition hover:scale-105 shadow-md">
+                        <i class="bi bi-journal-plus text-xl"></i>
+                        <span class="font-medium">Add Book</span>
+                    </a>
+                    
+                    <a href="{{ url_for('borrowing.list_fines') }}" class="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-6 py-4 rounded-lg flex items-center justify-center gap-2 hover:from-amber-600 hover:to-amber-700 transform transition hover:scale-105 shadow-md">
+                        <i class="bi bi-cash text-xl"></i>
+                        <span class="font-medium">View Fines</span>
                     </a>
                 </div>
-                {% endif %}
             </div>
         </div>
-    </div>
-    {% endif %}
-</div>
 
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5><i class="bi bi-lightning"></i> Quick Actions</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3 mb-2">
-                        <a href="{{ url_for('borrowing.borrow_book') }}" class="btn btn-primary w-100">
-                            <i class="bi bi-plus-circle"></i> Borrow Book
-                        </a>
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <a href="{{ url_for('students.add_student') }}" class="btn btn-success w-100">
-                            <i class="bi bi-person-plus"></i> Add Student
-                        </a>
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <a href="{{ url_for('books.add_book') }}" class="btn btn-info w-100">
-                            <i class="bi bi-journal-plus"></i> Add Book
-                        </a>
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <a href="{{ url_for('borrowing.list_fines') }}" class="btn btn-warning w-100">
-                            <i class="bi bi-cash"></i> View Fines
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-</div>
-</div>
 </div>
 {% endblock %}
