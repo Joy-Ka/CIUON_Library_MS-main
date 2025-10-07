@@ -14,7 +14,9 @@ def create_app():
     app = Flask(__name__)
     
     # Configuration
-    app.config['SECRET_KEY'] = os.environ.get('SESSION_SECRET', 'dev-secret-key-confucius-institute')
+    app.config['SECRET_KEY'] = os.environ.get('SESSION_SECRET')
+    if not app.config['SECRET_KEY']:
+        raise RuntimeError("SESSION_SECRET environment variable must be set. Please set it in your environment.")
     
     # Flexible database configuration: PostgreSQL or SQLite
     database_url = os.environ.get('DATABASE_URL')
