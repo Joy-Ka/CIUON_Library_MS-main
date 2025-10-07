@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Inactive Students{% endblock %}
+{% block page_header %}Inactive Students Report{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-6">
+        <a href="{{ url_for('reports.index') }}" class="inline-flex items-center text-red-600 hover:text-red-700">
+            <i class="bi bi-arrow-left mr-2"></i>Back to Reports
+        </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-6">
+            {% if inactive_students %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Identifier</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Last Borrowed</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Days Inactive</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for student in inactive_students %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">{{ student.name }}</td>
+                            <td class="px-6 py-4 text-gray-500">{{ student.identifier }}</td>
+                            <td class="px-6 py-4 text-gray-500">{{ student.last_borrow_date if student.last_borrow_date else 'Never' }}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">
+                                    {{ student.days_inactive }} days
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-12 text-gray-500">
+                <i class="bi bi-check-circle text-5xl mb-3 text-green-500"></i>
+                <p>All students are active</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

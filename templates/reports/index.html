@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports{% endblock %}
+{% block page_header %}Reports & Analytics{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="{{ url_for('reports.most_borrowed_books') }}" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-red-100 p-3 rounded-lg">
+                    <i class="bi bi-graph-up text-2xl text-red-600"></i>
+                </div>
+                <h3 class="ml-4 text-lg font-semibold text-gray-800">Most Borrowed Books</h3>
+            </div>
+            <p class="text-sm text-gray-600">View the most popular books in your library</p>
+        </a>
+
+        <a href="{{ url_for('reports.active_students') }}" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-blue-100 p-3 rounded-lg">
+                    <i class="bi bi-people text-2xl text-blue-600"></i>
+                </div>
+                <h3 class="ml-4 text-lg font-semibold text-gray-800">Active Students</h3>
+            </div>
+            <p class="text-sm text-gray-600">Students with current borrowing activity</p>
+        </a>
+
+        <a href="{{ url_for('reports.category_trends') }}" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-green-100 p-3 rounded-lg">
+                    <i class="bi bi-pie-chart text-2xl text-green-600"></i>
+                </div>
+                <h3 class="ml-4 text-lg font-semibold text-gray-800">Category Trends</h3>
+            </div>
+            <p class="text-sm text-gray-600">Borrowing trends by book category</p>
+        </a>
+
+        <a href="{{ url_for('reports.stock_status') }}" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-yellow-100 p-3 rounded-lg">
+                    <i class="bi bi-box-seam text-2xl text-yellow-600"></i>
+                </div>
+                <h3 class="ml-4 text-lg font-semibold text-gray-800">Stock Status</h3>
+            </div>
+            <p class="text-sm text-gray-600">Current inventory and availability</p>
+        </a>
+
+        <a href="{{ url_for('reports.overdue_items') }}" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-red-100 p-3 rounded-lg">
+                    <i class="bi bi-exclamation-triangle text-2xl text-red-600"></i>
+                </div>
+                <h3 class="ml-4 text-lg font-semibold text-gray-800">Overdue Items</h3>
+            </div>
+            <p class="text-sm text-gray-600">Books that are past their due date</p>
+        </a>
+
+        <a href="{{ url_for('reports.staff_borrows') }}" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-purple-100 p-3 rounded-lg">
+                    <i class="bi bi-person-badge text-2xl text-purple-600"></i>
+                </div>
+                <h3 class="ml-4 text-lg font-semibold text-gray-800">Staff Borrowing</h3>
+            </div>
+            <p class="text-sm text-gray-600">View staff borrowing statistics</p>
+        </a>
+
+        <a href="{{ url_for('reports.stock_depletion') }}" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-orange-100 p-3 rounded-lg">
+                    <i class="bi bi-arrow-down-circle text-2xl text-orange-600"></i>
+                </div>
+                <h3 class="ml-4 text-lg font-semibold text-gray-800">Stock Depletion</h3>
+            </div>
+            <p class="text-sm text-gray-600">Books running low on available copies</p>
+        </a>
+
+        <a href="{{ url_for('reports.inactive_students') }}" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-gray-100 p-3 rounded-lg">
+                    <i class="bi bi-person-slash text-2xl text-gray-600"></i>
+                </div>
+                <h3 class="ml-4 text-lg font-semibold text-gray-800">Inactive Students</h3>
+            </div>
+            <p class="text-sm text-gray-600">Students with no recent activity</p>
+        </a>
+
+        <a href="{{ url_for('reports.charts') }}" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-indigo-100 p-3 rounded-lg">
+                    <i class="bi bi-bar-chart text-2xl text-indigo-600"></i>
+                </div>
+                <h3 class="ml-4 text-lg font-semibold text-gray-800">Visual Charts</h3>
+            </div>
+            <p class="text-sm text-gray-600">Interactive charts and visualizations</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

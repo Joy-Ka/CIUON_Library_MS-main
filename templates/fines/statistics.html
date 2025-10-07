@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Fine Statistics{% endblock %}
+{% block page_header %}Fine Statistics{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-6">
+        <a href="{{ url_for('fines.list_fines') }}" class="inline-flex items-center text-red-600 hover:text-red-700">
+            <i class="bi bi-arrow-left mr-2"></i>Back to Fines
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 uppercase">Total Fines</p>
+                    <p class="text-3xl font-bold text-red-600 mt-2">{{ total_fines }}</p>
+                </div>
+                <i class="bi bi-cash-stack text-3xl text-red-600"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 uppercase">Unpaid Amount</p>
+                    <p class="text-3xl font-bold text-yellow-600 mt-2">KES {{ unpaid_amount }}</p>
+                </div>
+                <i class="bi bi-exclamation-triangle text-3xl text-yellow-600"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 uppercase">Paid Amount</p>
+                    <p class="text-3xl font-bold text-green-600 mt-2">KES {{ paid_amount }}</p>
+                </div>
+                <i class="bi bi-check-circle text-3xl text-green-600"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 uppercase">Waived Amount</p>
+                    <p class="text-3xl font-bold text-blue-600 mt-2">KES {{ waived_amount }}</p>
+                </div>
+                <i class="bi bi-shield-check text-3xl text-blue-600"></i>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
