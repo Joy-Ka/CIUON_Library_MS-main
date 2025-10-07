@@ -14,7 +14,7 @@ Usage:
 
 import argparse
 import sys
-from app import app
+from main import app
 from utils.email_service import send_due_date_reminders, send_overdue_notices
 
 def main():
