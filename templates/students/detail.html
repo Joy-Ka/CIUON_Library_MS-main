@@ -1,0 +1,152 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Student Details - {{ student.name }}{% endblock %}
+{% block page_header %}Student Details{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-6">
+        <a href="{{ url_for('students.list_students') }}" class="inline-flex items-center text-red-600 hover:text-red-700">
+            <i class="bi bi-arrow-left mr-2"></i>Back to Students List
+        </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="bg-gradient-to-r from-red-600 to-red-700 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold">{{ student.name }}</h2>
+                    <p class="text-red-100 mt-1">{{ student.identifier }}</p>
+                </div>
+                <a href="{{ url_for('students.edit_student', student_id=student.id) }}" class="bg-white text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 transition">
+                    <i class="bi bi-pencil mr-2"></i>Edit
+                </a>
+            </div>
+        </div>
+
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase mb-2">Contact Information</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <p class="text-sm text-gray-500">Email</p>
+                            <p class="font-medium">{{ student.email or 'Not provided' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Phone</p>
+                            <p class="font-medium">{{ student.phone or 'Not provided' }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase mb-2">Account Information</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <p class="text-sm text-gray-500">Student ID</p>
+                            <p class="font-medium">#{{ student.id }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Membership Status</p>
+                            <p class="font-medium">
+                                <span class="px-3 py-1 rounded-full text-sm {% if student.membership_status == 'active' %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                    {{ student.membership_status.title() }}
+                                </span>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Current Borrowed Books</p>
+                            <p class="font-medium">{{ student.current_borrowed_count }} / 3</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Total Unpaid Fines</p>
+                            <p class="font-medium">KES {{ "%.2f"|format(student.total_fines) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if unpaid_fines %}
+            <div class="border-t pt-6 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center text-red-600">
+                    <i class="bi bi-exclamation-triangle mr-2"></i>
+                    Unpaid Fines
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Book</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Reason</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for fine in unpaid_fines %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">{{ fine.borrow_record.book_ref.title }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">{{ fine.reason }}</td>
+                                <td class="px-6 py-4 font-semibold text-red-600">KES {{ "%.2f"|format(fine.amount) }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">{{ fine.created_at.strftime('%b %d, %Y') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="border-t pt-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="bi bi-journal-bookmark text-red-600 mr-2"></i>
+                    Borrowing History
+                </h3>
+                
+                {% if borrow_history %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Book</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Borrowed</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Due Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for record in borrow_history %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">
+                                    <a href="{{ url_for('books.view_book', book_id=record.book_ref.id) }}" class="text-red-600 hover:text-red-700">
+                                        {{ record.book_ref.title }}
+                                    </a>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500">{{ record.borrowed_at.strftime('%b %d, %Y') }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">{{ record.due_date.strftime('%b %d, %Y') }}</td>
+                                <td class="px-6 py-4">
+                                    {% if record.returned_at %}
+                                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Returned</span>
+                                    {% elif record.is_overdue %}
+                                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Overdue ({{ record.days_overdue }} days)</span>
+                                    {% else %}
+                                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">Active</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-8 text-gray-500">
+                    <i class="bi bi-inbox text-4xl mb-2"></i>
+                    <p>No borrowing history found</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

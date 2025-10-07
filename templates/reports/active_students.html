@@ -25,13 +25,13 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        {% for student in students %}
+                        {% for student, borrow_count in students %}
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 font-medium">{{ student.name }}</td>
                             <td class="px-6 py-4 text-gray-500">{{ student.identifier }}</td>
                             <td class="px-6 py-4">
                                 <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                                    {{ student.current_borrowed_count }} books
+                                    {{ borrow_count }} books
                                 </span>
                             </td>
                             <td class="px-6 py-4">

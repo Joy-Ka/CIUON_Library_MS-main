@@ -26,14 +26,14 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        {% for book in books %}
+                        {% for book, borrow_count in books %}
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 font-bold text-red-600">#{{ loop.index }}</td>
                             <td class="px-6 py-4 font-medium">{{ book.title }}</td>
                             <td class="px-6 py-4 text-gray-500">{{ book.author }}</td>
                             <td class="px-6 py-4">
                                 <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
-                                    {{ book.borrow_count }} borrows
+                                    {{ borrow_count }} borrows
                                 </span>
                             </td>
                             <td class="px-6 py-4">

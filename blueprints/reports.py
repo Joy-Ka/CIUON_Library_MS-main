@@ -23,13 +23,16 @@ def most_borrowed_books():
         flash('Access denied. Admin privileges required.', 'error')
         return redirect(url_for('dashboard.index'))
     
-    # Get most borrowed books
-    most_borrowed = db.session.query(
-        Book.title,
-        Book.author,
-        Book.unique_id,
+    # Get most borrowed books with borrow count
+    subquery = db.session.query(
+        BorrowRecord.book_id,
         func.count(BorrowRecord.id).label('borrow_count')
-    ).join(BorrowRecord).group_by(Book.id).order_by(desc('borrow_count')).limit(20).all()
+    ).group_by(BorrowRecord.book_id).subquery()
+    
+    most_borrowed = db.session.query(
+        Book,
+        subquery.c.borrow_count
+    ).join(subquery, Book.id == subquery.c.book_id).order_by(desc(subquery.c.borrow_count)).limit(20).all()
     
     return render_template('reports/most_borrowed.html', books=most_borrowed)
 
@@ -40,14 +43,16 @@ def active_students():
         flash('Access denied. Admin privileges required.', 'error')
         return redirect(url_for('dashboard.index'))
     
-    # Get most active students
-    active_students = db.session.query(
-        Student.name,
-        Student.registration_number,
-        Student.id_number,
-        Student.passport_number,
+    # Get most active students with borrow count
+    subquery = db.session.query(
+        BorrowRecord.student_id,
         func.count(BorrowRecord.id).label('borrow_count')
-    ).join(BorrowRecord).group_by(Student.id, Student.name, Student.registration_number, Student.id_number, Student.passport_number).order_by(desc('borrow_count')).limit(20).all()
+    ).filter(BorrowRecord.student_id.isnot(None)).group_by(BorrowRecord.student_id).subquery()
+    
+    active_students = db.session.query(
+        Student,
+        subquery.c.borrow_count
+    ).join(subquery, Student.id == subquery.c.student_id).order_by(desc(subquery.c.borrow_count)).limit(20).all()
     
     return render_template('reports/active_students.html', students=active_students)
 
