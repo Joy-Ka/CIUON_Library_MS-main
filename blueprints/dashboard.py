@@ -47,42 +47,6 @@ def index():
 
 @dashboard_bp.route('/send-due-reminders')
 @login_required
-
-
-@dashboard_bp.route('/test-email')
-@login_required
-def test_email():
-    """Send a test email to verify configuration"""
-    if current_user.role != 'admin':
-        flash('Access denied. Admin privileges required.', 'error')
-        return redirect(url_for('dashboard.index'))
-    
-    # Import here to avoid circular imports
-    from utils.email_service import send_email
-    
-    # Send test email to admin
-    test_email = current_user.email
-    subject = "Library System - Email Test"
-    body = """
-This is a test email from the Confucius Institute Library Management System.
-
-If you received this email, your email configuration is working correctly!
-
-System Information:
-- Sent at: """ + datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC') + """
-- User: """ + current_user.username + """
-
-Best regards,
-Library System
-"""
-    
-    if send_email(test_email, subject, body, 'test', None, None):
-        flash(f'Test email sent successfully to {test_email}. Check your inbox!', 'success')
-    else:
-        flash('Failed to send test email. Check email configuration in Secrets.', 'error')
-    
-    return redirect(url_for('dashboard.index'))
-
 def send_due_reminders():
     """Manually trigger due date reminder emails"""
     if current_user.role != 'admin':
@@ -103,4 +67,39 @@ def send_overdue_notices_route():
     
     sent_count = send_overdue_notices()
     flash(f'Successfully sent {sent_count} overdue notice emails.', 'success')
+    return redirect(url_for('dashboard.index'))
+
+@dashboard_bp.route('/test-email')
+@login_required
+def test_email():
+    """Send a test email to verify configuration"""
+    if current_user.role != 'admin':
+        flash('Access denied. Admin privileges required.', 'error')
+        return redirect(url_for('dashboard.index'))
+    
+    # Import here to avoid circular imports
+    from utils.email_service import send_email
+    from datetime import datetime
+    
+    # Send test email to admin
+    recipient_email = current_user.email
+    subject = "Library System - Email Test"
+    body = f"""
+This is a test email from the Confucius Institute Library Management System.
+
+If you received this email, your email configuration is working correctly!
+
+System Information:
+- Sent at: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}
+- User: {current_user.username}
+
+Best regards,
+Library System
+"""
+    
+    if send_email(recipient_email, subject, body, 'test', None, None):
+        flash(f'Test email sent successfully to {recipient_email}. Check your inbox!', 'success')
+    else:
+        flash('Failed to send test email. Check email configuration in Secrets.', 'error')
+    
     return redirect(url_for('dashboard.index'))
